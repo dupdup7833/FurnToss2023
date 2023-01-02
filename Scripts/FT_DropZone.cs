@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using System.Collections;
 using HurricaneVR.Framework.Core;
 using HurricaneVR.Framework.Core.Grabbers;
+using TMPro;
 
 public class FT_DropZone : MonoBehaviour
 {
@@ -16,8 +17,10 @@ public class FT_DropZone : MonoBehaviour
     public int bankShotBonus = 50;
     public float distanceMultiplierBonus = 25.0f;
 
+    public TextMeshPro scoreResult;
+
     // Transforms to act as start and end markers for the journey.
-    public Transform dropZone;
+    public GameObject dropZone;
     public GameObject guideGamePiece;
     private Mesh guideGamePieceMesh;
 
@@ -108,6 +111,7 @@ public class FT_DropZone : MonoBehaviour
                 }
             }
             guideGamePiece.SetActive(false);
+           
         }
     }
 
@@ -115,6 +119,7 @@ public class FT_DropZone : MonoBehaviour
     {
         Debug.Log("Snap to Zone");
 
+        
         snapToZoneSound.Play(0);
         objectPlaced = true;
 
@@ -139,13 +144,26 @@ public class FT_DropZone : MonoBehaviour
             yield return null;
         }
         guideGamePiece.SetActive(false);
+        dropZone.SetActive(false);
 
         string scoreMessage = CalculateScore(otherGameObject);
         FT_GameController.GamePiecePlaced(scoreMessage);
         FT_GameController.GC.currentStage.CheckIfComplete();
 
+        ShowScore(scoreMessage);
+
         // invoke the snapped event so that listening scoring tiles can turn on
         Snapped.Invoke();
+    }
+
+    private void ShowScore(string scoreMessageIn)
+    {
+        Destroy(scoreResult,5f);
+        scoreResult.transform.LookAt(FT_GameController.playerTransform);
+        scoreResult.SetText(scoreMessageIn);
+        scoreResult.gameObject.SetActive(true);
+        Quaternion q = scoreResult.transform.rotation;
+        scoreResult.transform.rotation = Quaternion.Euler(q.eulerAngles.x, q.eulerAngles.y + 180, q.eulerAngles.z);
     }
 
     private string CalculateScore(GameObject otherGameObject)
