@@ -68,6 +68,7 @@ public class FT_GameController : MonoBehaviour
 
     public void UnloadPreviousScene()
     {
+         Debug.Log("UnLoading Scene "+currentSceneName);
         if (!string.IsNullOrEmpty(currentSceneName))
         {
             SceneManager.UnloadSceneAsync(currentSceneName);
@@ -76,6 +77,7 @@ public class FT_GameController : MonoBehaviour
     }
     public void LoadScene(string sceneName)
     {
+        Debug.Log("Loading Scene "+sceneName);
         UnloadPreviousScene();
 
         currentSceneName = sceneName;
